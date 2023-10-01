@@ -32,9 +32,5 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // });
 
 //Shoelace initialization
-import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
-setBasePath('./public/assets')
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
-import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
+
 
