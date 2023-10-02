@@ -9,6 +9,11 @@
         display: grid;
     }
 </style>
+    <script>
+        function redirectSignIn() {
+            window.location.href = "/login";
+        }
+    </script>
 </head>
 <body >
     <div class="navbar" id="navbar">
@@ -18,8 +23,10 @@
             <sl-dropdown>
                 <sl-avatar slot="trigger" label="avatar"></sl-avatar>
                 <sl-menu>
-                    <sl-menu-item>Profile</sl-menu-item>
-                    <sl-menu-item>Logout</sl-menu-item>
+                    <!-- TODO: Add code to adjust based on if user is signed in -->
+                    <!-- <sl-menu-item>Profile</sl-menu-item>
+                    <sl-menu-item>Logout</sl-menu-item> -->
+                    <sl-menu-item onclick="redirectSignIn()">Sign In</sl-menu-item>
                 </sl-menu>
             </sl-dropdown>
             </li>
@@ -68,7 +75,7 @@
 
 </body>
 <footer>
-    <a href="https://github.com/CodifiedDev" style=" color: inherit; text-decoration: none; position: absolute;"><p>Made with 💖 by Ben </p></a>
+    <a href="https://github.com/CodifiedDev" style=" color: inherit; text-decoration: none; position: absolute;"><p>Made with 💖 in Australia 🇦🇺</p></a>
 </footer>
 <script>
     const drawer = document.getElementById('menudrawer')
