@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="sl-theme-dark">
 <head>
+    <?php  setcookie('profile', "", time() - (86400 * 30), "/"); ?>
     <title>Aurora - Account</title>
     @vite("resources/js/app.js", "vendor/courier/build")
     <style>

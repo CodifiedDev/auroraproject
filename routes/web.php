@@ -114,7 +114,6 @@ Route::get('/account', function () {
     if (!verifySignedIn()){
         return redirect('/login')->with('error', 'You must be logged in to do that');
     }
-    setcookie('profile', "", time() - (86400 * 30), "/");
     return view('account');
 });
 Route::get('/logout', function () {
@@ -151,4 +150,14 @@ Route::get('/dashboard', function (Request $request) {
         }
     }
     return view('dashboard');
+});
+Route::get('/dashboard/createprofile', function (Request $request){
+    if (!verifySignedIn()){
+        return redirect('/login')->with('error', 'You must be logged in to do that');
+    }
+    $profileset = $request->input('profile');
+    if ($profileset == null){
+        return redirect('/account');
+    }
+    return view('newProfile');
 });
