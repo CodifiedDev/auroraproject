@@ -1,15 +1,37 @@
-@extends('app')
-@section('title')
-    The Aurora Project
-@endsection
-@section('head')
+<!DOCTYPE html>
+<html lang="en-au" class="sl-theme-dark">
+<head>
+    <title>The Aurora Project</title>
+    @vite("resources/js/app.js", "vendor/courier/build")
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.9.0/cdn/themes/light.css" /> -->
+<style>
+    .toptencontain {
+        display: grid;
+    }
+</style>
     <script>
         function redirectSignIn() {
             window.location.href = "/login";
         }
     </script>
-@endsection
-@section('content')
+</head>
+<body >
+    <div class="navbar" id="navbar">
+        <ul>
+            <li style="float: left"> <sl-icon-button name="list" label="Menu" style="font-size: 36px" onclick="opendrawer()"></sl-icon-button> </li>
+            <li style="float: right; margin: 5px">
+            <sl-dropdown>
+                <sl-avatar slot="trigger" label="avatar"></sl-avatar>
+                <sl-menu>
+                    <!-- TODO: Add code to adjust based on if user is signed in -->
+                    <!-- <sl-menu-item>Profile</sl-menu-item>
+                    <sl-menu-item>Logout</sl-menu-item> -->
+                    <sl-menu-item onclick="redirectSignIn()">Sign In</sl-menu-item>
+                </sl-menu>
+            </sl-dropdown>
+            </li>
+        </ul>
+    </div>
     <div style="position: relative; text-align: center; margin-top: 10vh">
         <h1>Welcome to <mark style="color: var(--sl-color-purple-800); background-color: var(--sl-panel-background-color)">Aurora</mark>✨</h1>
         <h2>For all your writing needs 📚</h2>
@@ -42,4 +64,23 @@
             </div>
         </sl-card>
     </div>
-@endsection
+<sl-drawer id="menudrawer" label="Menu" placement="start">
+    <ul style="list-style-type: none; margin: 0; padding: 0;" class="menulist">
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/library">Browse</a></li>
+    </ul>
+</sl-drawer>
+
+
+</body>
+<footer>
+    <a href="https://github.com/CodifiedDev" style=" color: inherit; text-decoration: none; position: absolute;"><p>Made with 💖 in Australia 🇦🇺</p></a>
+</footer>
+<script>
+    const drawer = document.getElementById('menudrawer')
+    function opendrawer() {
+        console.log('open')
+        drawer.show()
+    }
+</script>

@@ -122,42 +122,124 @@ Route::get('/logout', function () {
     }
     DB::table('authenticatedSessions')->where('loginToken', session('user'))->delete();
     session()->forget('user');
+    session()->forget('profile');
     return redirect('/login')->with('success', 'Logged out successfully');
 });
 Route::get('/dashboard', function (Request $request) {
     if (!verifySignedIn()){
         return redirect('/login')->with('error', 'You must be logged in to do that');
     }
-    if (!isset($_COOKIE['profile'])) {
-        $profileset = $request->input('profile');
-        if ($profileset == null) {
-            return redirect('/account');
-        }
+    if ($request->input('profile') != null){
+        session(['profile' => $request->input('profile')]);
+        return redirect('/dashboard');
+    }
+    if (session('profile') == null){
+        return redirect('/account');}
         else {
-            if ($profileset == 4) {
-                setcookie('profile', 1, time() + (86400 * 30), "/");
+            if (session('profile') == 4) {
                 return view('dashboard');
             }
             $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
-            $profile = DB::table('profiles')->where('userid', $userid)->where('profileType', $profileset)->first();
+            $profile = DB::table('profiles')->where('userid', $userid)->where('profileType', session('profile'))->first();
             if ($profile == null) {
-                return redirect('/dashboard/createprofile?profile=' . $profileset);
+                return redirect('/dashboard/createprofile?profile=' . session('profile'));
             }
             else {
-                setcookie('profile', $profile->profileid, time() + (86400 * 30), "/");
-                return view('dashboard');
+                return view('dashboard')->with('userid', $userid)->with('profile', $profile);
             }
         }
-    }
-    return view('dashboard');
 });
 Route::get('/dashboard/createprofile', function (Request $request){
     if (!verifySignedIn()){
         return redirect('/login')->with('error', 'You must be logged in to do that');
     }
     $profileset = $request->input('profile');
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
     if ($profileset == null){
         return redirect('/account');
     }
+    if (DB::table('profiles')->where('userid', $userid)->where('profileType', $profileset)->first() != null){
+        return redirect('/dashboard?profile=' . $profileset);
+    }
     return view('newProfile');
+});
+Route::post('/dashboard/createprofile', function (Request $request) {
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
+    $profileset = $request->input('profile');
+    $profileName = $request->input('username');
+    $profilelocation = $request->input('location');
+    $tablenotcreate = true;
+    while ($tablenotcreate) {
+        try {
+            DB::table('profiles')->insert([
+                'profileID' => bin2hex(random_bytes(32)),
+                'userid' => $userid,
+                'profileType' => $profileset,
+                'username' => $profileName,
+                'location' => $profilelocation,
+            ]);
+            $tablenotcreate = false;
+        } catch (Exception $e) {
+            continue;
+        }
+    }
+    return redirect('/dashboard?profile=' . $profileset);
+});
+Route::get('/library', function (Request $request){
+    if (!verifySignedIn()){
+        return redirect('/login')->with('error', 'You must be logged in to do that');
+    }
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
+    $profileset = session('profile');
+    if ($profileset == null){
+        return redirect('/account');
+    }
+    $profile = DB::table('profiles')->where('userid', $userid)->where('profileType', $profileset)->first();
+    if ($profile == null){
+        return redirect('/dashboard/createprofile?profile=' . $profileset);
+    }
+    return view('library')->with('profile', $profile);
+});
+Route::get('/dashboard/compose', function (Request $request) {
+    if (!verifySignedIn()){
+        return redirect('/login')->with('error', 'You must be logged in to do that');
+    }
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
+    $profileset = session('profile');
+    if ($profileset == null){
+        return redirect('/account');
+    }
+    $profile = DB::table('profiles')->where('userid', $userid)->where('profileType', $profileset)->first();
+    if ($profile == null){
+        return redirect('/dashboard/createprofile?profile=' . $profileset);
+    }
+    if ($request->input('titleid')== null) {
+        $newtitleid = bin2hex(random_bytes(32));
+        DB::table('writtenContent')->insert([
+            'titleid' => $newtitleid,
+            'authorid' => $profile->profileID,
+            'category' => $profileset,
+        ]);
+        return redirect('/dashboard/compose?titleid=' . $newtitleid. '&page=1');
+    }
+    if ($request->input('page') == null){
+        $highestpage = DB::table('writtenContent')->where('titleid', $request->input('titleid'))->max('pageNumber') + 1;
+        return redirect('/dashboard/compose?titleid=' . $request->input('titleid') . '&page=' . $highestpage);
+    }
+    if ($request->input('page') < 1){
+        return redirect('/dashboard/compose?titleid=' . $request->input('titleid') . '&page=1');
+    }
+    if (DB::table('writtenContent')->where('titleid', $request->input('titleid'))->where('authorid', $profile->profileID)->first() == null){
+        return redirect('/dashboard/compose');
+    }
+    if (DB::table('writtenContentPages')->where('titleID', $request->input('titleid'))->where('pageNumber', $request->input('page'))->first() == null){
+        $highestpage = DB::table('writtenContentPages')->where('titleID', $request->input('titleid'))->max('pageNumber');
+        DB::table('writtenContentPages')->insert([
+            'titleid' => $request->input('titleid'),
+            'pageNumber' => $highestpage + 1,
+            'timestamp' => date('U'),
+        ]);
+        return redirect('/dashboard/compose?titleid=' . $request->input('titleid') . '&page=' . ($highestpage + 1));
+    }
+    return view('compose')->with('titleID', $request->input('titleid'))->with('page', $request->input('page'));
 });

@@ -13,6 +13,7 @@
     "dependencies": {
         "@shoelace-style/shoelace": "^2.9.0",
         "concurrently": "^8.2.1",
-        "md-block": "^0.0.1"
+        "md-block": "^0.0.1",
+        "simplemde": "^1.11.2"
     }
 }
