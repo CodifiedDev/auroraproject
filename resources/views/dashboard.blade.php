@@ -30,6 +30,21 @@
             <sl-button slot="footer" variant="primary">Update Profile Picture</sl-button>
         </form>
     </sl-dialog>
+    <sl-dialog <?php if (request()->get('titleid') != null) echo 'open'?> style="--width: 50vw;">
+        <?php
+        $titleID = request()->get('titleid');
+        $titleDB = \Illuminate\Support\Facades\DB::table('writtenContent')->where('titleID', $titleID)->first();
+        ?>
+        <img src="<?php if ($titleDB != null) {echo $titleDB->coverImage;}?>" style="width: 100%";}>
+        <sl-input name="title" label="Title" value="<?php if ($titleDB != null) {echo $titleDB->title;}?>"></sl-input> <br>
+        <sl-input name="tags" label="Tags" value="<?php if ($titleDB != null) {echo $titleDB->tags;}?>" help-text="Please separate with semicolons (;)"></sl-input> <br>
+        <sl-textarea name="description" label="Description" value="<?php if ($titleDB != null) {echo $titleDB->miniDescription;}?>"></sl-textarea> <br>
+        <sl-divider></sl-divider>
+        <h2>Cover Image</h2>
+        <input type="file"> <br>
+        <sl-divider></sl-divider>
+        <sl-button variant="primary">Confirm</sl-button>
+    </sl-dialog>
     <div class="dashboardContent">
         <div style="grid-column: 1; grid-row: 1">
             <h1>Hey <?php echo $name?></h1>
@@ -58,7 +73,7 @@
                         <sl-dropdown placement="bottom-end">
                             <script>
                                 function redirectProperties() {
-                                    window.location.href = "/dashboard/properties?titleid=placeholder";
+                                    window.location.href = "/dashboard?titleid=75e9b746d955f29a977c9f342b4f899beb7f79ebe72e97a45703144a3849eee3";
                                 }
                             </script>
                             <sl-button slot="trigger" variant="primary" caret pill>
@@ -109,7 +124,7 @@
     </div>
     <div>
         <sl-tooltip content="Create new draft">
-        <sl-icon-button name="plus-circle" label="Add" style="font-size: 36px; position: fixed; bottom: 2rem; right: 2rem" href="/dashboard/compose" <?php if ($profile == 4) {echo 'disabled';} ?>></sl-icon-button>
+        <sl-icon-button name="plus-circle" label="Add" style="font-size: 36px; position: fixed; bottom: 2rem; right: 2rem" href="/dashboard/compose" <?php  if ($profile == 4) {echo 'disabled';} ?>></sl-icon-button>
         </sl-tooltip>
     </div>
 @endsection
