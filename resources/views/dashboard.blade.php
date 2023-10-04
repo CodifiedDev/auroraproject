@@ -56,6 +56,11 @@
                     <sl-button-group>
                         <sl-button variant="primary" pill>Read</sl-button>
                         <sl-dropdown placement="bottom-end">
+                            <script>
+                                function redirectProperties() {
+                                    window.location.href = "/dashboard/properties?titleid=placeholder";
+                                }
+                            </script>
                             <sl-button slot="trigger" variant="primary" caret pill>
                                 <sl-visually-hidden>More options</sl-visually-hidden>
                             </sl-button>
@@ -63,6 +68,7 @@
                                 <sl-menu-item>Change Visability</sl-menu-item>
                                 <sl-menu-item>Archive</sl-menu-item>
                                 <sl-menu-item>Delete</sl-menu-item>
+                                <sl-menu-item onclick="redirectProperties()">Modify Properties</sl-menu-item>
                             </sl-menu>
                         </sl-dropdown>
                     </sl-button-group>
@@ -90,6 +96,7 @@
                                 <sl-menu-item>Change Visability</sl-menu-item>
                                 <sl-menu-item>Archive</sl-menu-item>
                                 <sl-menu-item>Delete</sl-menu-item>
+                                <sl-menu-item onclick="redirectProperties()">Modify Properties</sl-menu-item>
                             </sl-menu>
                         </sl-dropdown>
                     </sl-button-group>

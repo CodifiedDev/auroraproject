@@ -15,8 +15,6 @@ $pageDB = \Illuminate\Support\Facades\DB::table('writtenContentPages')->where('t
     <form method="post">
 <div style="margin-top: 6vh">
     <h1>Compose</h1>
-    <sl-input name="title" label="Title"></sl-input> <br>
-    <sl-input name="tags" label="Tags" help-text="Please seperate tags with commas."></sl-input> <br>
     <sl-input name="chaptitle" label="Chapter Title"></sl-input> <br>
 </div>
 
@@ -29,6 +27,7 @@ $pageDB = \Illuminate\Support\Facades\DB::table('writtenContentPages')->where('t
         </div>
         <div style="float: right">
             <sl-button variant="neutral" href="<?php echo '/dashboard/compose?titleid='. request()->get('titleid'). '&page='. (request()->get('page') - 1)?>">Previous Page</sl-button>
+            <h2 style="display: inline; color: var(--sl-color-neutral-500)"><?php echo request()->get('page') ?></h2>
             <sl-button variant="neutral" href="<?php echo '/dashboard/compose?titleid='. request()->get('titleid'). '&page='. (request()->get('page') + 1)?>">Next Page</sl-button>
         </div>
 <script>
