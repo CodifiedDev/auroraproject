@@ -55,6 +55,30 @@ function verifySignedIn(){
     }
     return true;
 };
+function verifyProfile(){
+    if (session('profile') == null){
+        return redirect('/account');
+    }
+    if (session('profile') == 4){
+        return true;
+    }
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
+    $profileDB = DB::table('profiles')->where('userid', $userid)->where('profileType', session('profile'))->first();
+    if ($profileDB == null){
+        return redirect('/dashboard/createprofile?profile=' . session('profile'));
+    }
+    return true;
+};
+function verifyTitleOwnership($titleID) {
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
+    $profileset = session('profile');
+    $profileid = DB::table('profiles')->where('userid', $userid)->where('profileType', $profileset)->first()->profileID;
+    $titleDB = DB::table('writtenContent')->where('titleID', $titleID)->where('authorid', $profileid)->first();
+    if ($titleDB == null){
+        return false;
+    }
+    return true;
+};
 
 Route::get('/', function () {
     return view('home');
@@ -271,4 +295,27 @@ Route::post('/dashboard/compose/newTitle', function (Request $request){
         'visability' => 0,
     ]);
     return redirect('/dashboard/compose?titleid=' . $newtitleid);
+});
+Route::get('/dashboard/delete', function (Request $request){
+   $titleID = $request->input('titleid');
+   if (!verifyTitleOwnership($titleID)){
+       return redirect('/dashboard');
+   }
+    DB::table('writtenContent')->where('titleID', $titleID)->delete();
+    DB::table('writtenContentPages')->where('titleID', $titleID)->delete();
+    return redirect('/dashboard');
+});
+Route::get('/dashboard/visability', function (Request $request){
+   $titleID = $request->input('titleid');
+    if (!verifyTitleOwnership($titleID)){
+         return redirect('/dashboard');
+    }
+    $visability = DB::table('writtenContent')->where('titleID', $titleID)->first()->visability;
+    if ($visability == 0){
+        DB::table('writtenContent')->where('titleID', $titleID)->update(['visability' => 1]);
+    }
+    else {
+        DB::table('writtenContent')->where('titleID', $titleID)->update(['visability' => 0]);
+    }
+    return redirect('/dashboard');
 });

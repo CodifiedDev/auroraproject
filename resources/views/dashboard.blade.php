@@ -35,22 +35,27 @@
                             <sl-button variant="primary" pill>Read</sl-button>
                             <sl-dropdown placement="bottom-end">
                                 <script>
-                                    function redirectProperties() {
+                                    function redirectProperties'. $titleid .'() {
                                         window.location.href = "/dashboard?titleid='. $titleid .'";
                                     }
-                                    function redirectCompose() {
+                                    function redirectCompose'. $titleid .'() {
                                         window.location.href = "/dashboard/compose?titleid='. $titleid .'";
+                                    }
+                                    function redirectDelete'. $titleid .'() {
+                                        window.location.href = "/dashboard/delete?titleid='. $titleid .'";
+                                    }
+                                    function redirectVisability'. $titleid .'() {
+                                        window.location.href = "/dashboard/visability?titleid='. $titleid .'";
                                     }
                                 </script>
                                 <sl-button slot="trigger" variant="primary" caret pill>
                                     <sl-visually-hidden>More options</sl-visually-hidden>
                                 </sl-button>
                                 <sl-menu>
-                                    <sl-menu-item>Change Visability</sl-menu-item>
-                                    <sl-menu-item>Archive</sl-menu-item>
-                                    <sl-menu-item>Delete</sl-menu-item>
-                                    <sl-menu-item onclick="redirectProperties()">Modify Properties</sl-menu-item>
-                                    <sl-menu-item onclick="redirectCompose()">Edit</sl-menu-item>
+                                    <sl-menu-item onclick="redirectVisability'. $titleid .'()">Change Visability</sl-menu-item>
+                                    <sl-menu-item onclick="redirectDelete'. $titleid .'()">Delete</sl-menu-item>
+                                    <sl-menu-item onclick="redirectProperties'. $titleid .'()">Modify Properties</sl-menu-item>
+                                    <sl-menu-item onclick="redirectCompose'. $titleid .'()">Edit</sl-menu-item>
                                 </sl-menu>
                             </sl-dropdown>
                         </sl-button-group>
