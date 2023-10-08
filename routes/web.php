@@ -238,3 +238,37 @@ Route::get('/dashboard/compose', function (Request $request) {
     }
     return view('compose')->with('titleID', $request->input('titleid'))->with('page', $request->input('page'));
 });
+Route::get('/dashboard/compose/newTitle', function (Request $request){
+    if (!verifySignedIn()){
+        return redirect('/login')->with('error', 'You must be logged in to do that');
+    }
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
+    $profileset = session('profile');
+    if ($profileset == null){
+        return redirect('/account');
+    }
+    $profile = DB::table('profiles')->where('userid', $userid)->where('profileType', $profileset)->first();
+    if ($profile == null){
+        return redirect('/dashboard/createprofile?profile=' . $profileset);
+    }
+    return view('newTitle');
+});
+Route::post('/dashboard/compose/newTitle', function (Request $request){
+   $newtitleid = bin2hex(random_bytes(32));
+    $userid = DB::table('authenticatedSessions')->where('loginToken', session('user'))->first()->userid;
+    $profileset = session('profile');
+    $profileid = DB::table('profiles')->where('userid', $userid)->where('profileType', $profileset)->first()->profileID;
+    $title = $request->input('title');
+    $description = $request->input('description');
+    $tags = $request->input('tags');
+    DB::table('writtenContent')->insert([
+        'titleID' => $newtitleid,
+        'category' => $profileset,
+        'authorid' => $profileid,
+        'title' => $title,
+        'miniDescription' => $description,
+        'tags' => $tags,
+        'visability' => 0,
+    ]);
+    return redirect('/dashboard/compose?titleid=' . $newtitleid);
+});
