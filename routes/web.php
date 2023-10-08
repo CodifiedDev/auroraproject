@@ -214,16 +214,11 @@ Route::get('/dashboard/compose', function (Request $request) {
         return redirect('/dashboard/createprofile?profile=' . $profileset);
     }
     if ($request->input('titleid')== null) {
-        $newtitleid = bin2hex(random_bytes(32));
-        DB::table('writtenContent')->insert([
-            'titleid' => $newtitleid,
-            'authorid' => $profile->profileID,
-            'category' => $profileset,
-        ]);
-        return redirect('/dashboard/compose?titleid=' . $newtitleid. '&page=1');
+
+        return redirect('/dashboard/compose/newTitle');
     }
     if ($request->input('page') == null){
-        $highestpage = DB::table('writtenContent')->where('titleid', $request->input('titleid'))->max('pageNumber') + 1;
+        $highestpage = (int)DB::table('writtenContent')->where('titleid', $request->input('titleid'))->max('pageNumber') + 1;
         return redirect('/dashboard/compose?titleid=' . $request->input('titleid') . '&page=' . $highestpage);
     }
     if ($request->input('page') < 1){

@@ -1,6 +1,16 @@
-@extends('wizards')
-@section('title', 'Register')
-@section('content')
+<!DOCTYPE html>
+<html lang="en" class="sl-theme-dark">
+<head>
+    <title>Aurora - Register</title>
+    @vite("resources/js/app.js", "vendor/courier/build")
+
+</head>
+<body>
+<div style="height: 98vh; display: flex; justify-content: center; align-items: center; top: 0">
+<sl-card style="max-width: 30vw; min-width: 20vw; max-height: 70vh; min-height: 30vh;">
+    <div style="text-align: center">
+        <h2>Register</h2>
+    </div>
     <form method="post">
         @csrf
         <sl-input name="username" label="Name" help-text="Use your real name, we'll set profiles up later" required></sl-input> <br>
@@ -11,4 +21,7 @@
     </form>
     <br>
     <sl-button style="width: 100%" href="/login">Already have an account?</sl-button>
-@endsection
+</sl-card>
+</div>
+</body>
+</html>
